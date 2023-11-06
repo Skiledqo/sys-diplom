@@ -11,7 +11,7 @@
 Для развертки инфраструктуры использовался Ansible. 
 Файл main.tf
 
-'''yaml
+```yaml
 terraform {
   required_providers {
     yandex = {
@@ -237,6 +237,6 @@ resource "yandex_compute_instance" "kibana" {
   }
 
 }
-'''
+```
 
 
