@@ -307,6 +307,31 @@ resource "yandex_compute_instance" "kibana" {
 ![Dashboard.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Dashboard.jpg)
 
 
+## Логи
+
+Т.к в данный момент доступ с территории РФ к репозиториям Elastic.co ограничен, было принято решение развернуть ELK в контейнере Docker. Версия Elasticsearch, Kibana и filebeat 7.17.13.
+
+Страница в логами из Web-server1 и Web-server2 Kibana
+
+![Logs.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Logs.jpg)
+
+## Сеть 
+
+VPC и Bastion host были созданы ранее, а также ВМ были распределены в свои подсети.
+
+Настроенные группы безопасности для Бастиона и ВМ из приватной сети
+
+![Security-Bastion.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Security-Bastion.jpg)
+
+![Seciruty-Private.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Security-Private.jpg)
+
+## Резервное копирование
+
+Настроено расписание для снимков жестких дисков
+
+![Snapshots.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Snapshots.jpg)
+
+
 
 
 
