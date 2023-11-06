@@ -8,7 +8,7 @@
 
 Для решения задачи было развернуто 6 ВМ (2 для веб-серверов, 1 - Elasticsearch, 1 - Zabbix_server, 1 - Kibana, 1- Bastion Host), а также виртуальная сеть для организации взаимодействия машин и сервисов.
 
-Для развертки инфраструктуры использовался Ansible. 
+Для развертки инфраструктуры использовался Terraform. 
 Файл main.tf
 
 ```yaml
@@ -238,6 +238,13 @@ resource "yandex_compute_instance" "kibana" {
 
 }
 ```
+Созданные ВМ
+
+![VM.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/VM.jpg)
+
+Созданная VPC
+
+![VPC.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/VPC.jpg)
 
 ## Сайт
 
@@ -255,6 +262,52 @@ resource "yandex_compute_instance" "kibana" {
 Протестируйте сайт curl -v <публичный IP балансера>:80
 
 ![Curl.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Curl.jpg)
+
+## Мониторинг 
+
+Для развертывания системы мониторинга Zabbix на все ВМ был использован Ansible, установленный на Bastion Host
+
+Конфигурация playbook для Zabbix-Agent и Zabbix-Server
+
+``` bash
+---
+- name: Install Zabbix Agent
+  hosts: zabbix_agents
+  tasks:
+    - name: Install Zabbix Agent
+      apt:
+        name: zabbix-agent
+        state: latest  
+      become: yes
+      tags:
+        - zabbix-agent
+
+- name: Install Zabbix Server
+  hosts: zabbix_server
+  tasks:
+    - name: Install PostgreSQL and required packages
+      apt:
+        name: 
+          - zabbix-server-pgsql  # Пакет Zabbix Server
+          - postgresql            # Пакет PostgreSQL
+          - postgresql-contrib    # Пакет дополнений PostgreSQL
+          - postgresql-libs       # Пакет библиотек PostgreSQL
+          - zabbix-pgsql          # Драйвер PostgreSQL для Zabbix
+        state: latest
+      become: yes
+      tags:
+        - zabbix-server
+```
+Хосты Zabbix
+
+![Hosts.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Hosts.jpg)
+
+Дашборд 
+
+![Dashboard.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Dashboard.jpg)
+
+
+
 
 
 
