@@ -239,4 +239,39 @@ resource "yandex_compute_instance" "kibana" {
 }
 ```
 
+## Сайт
+
+На созданных ВМ (Web-Server1 и Web-Server2) установлен сервер Nginx.
+Также настроен балансировщик нагрузки для этих серверов.
+
+![Balancer.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Balancer.jpg)
+
+Пример, как при обращении к веб-серверу меняется источник ответа
+
+![Web-server1.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Web-server1.jpg)
+
+![Web-server2.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Web-server2.jpg)
+
+Протестируйте сайт curl -v <публичный IP балансера>:80
+
+![Curl.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Curl.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
