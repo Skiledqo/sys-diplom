@@ -1,4 +1,15 @@
 ---
+- name: Install Zabbix Agent
+  hosts: zabbix_agents
+  tasks:
+    - name: Install Zabbix Agent
+      apt:
+        name: zabbix-agent
+        state: latest  
+      become: yes
+      tags:
+        - zabbix-agent
+
 - name: Install Zabbix Server
   hosts: zabbix_server
   tasks:
@@ -14,4 +25,3 @@
       become: yes
       tags:
         - zabbix-server
-
