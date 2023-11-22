@@ -544,7 +544,9 @@ zabbix-server ansible_host=zabbix-server.ru-central1.internal
         name: zabbix-agent
         state: started
         enabled: true
+```
 
+``` bash
 - name: Install Zabbix Server
   hosts: zabbix_server
   vars:
