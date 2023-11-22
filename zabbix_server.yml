@@ -1,0 +1,38 @@
+---
+- name: Install Zabbix Server
+  hosts: zabbix_server
+  vars:
+    zabbix_db_name: zabbix
+    zabbix_db_user: zabbix
+    zabbix_db_password: netology
+  tasks:
+    - name: Install PostgreSQL and required packages
+      apt:
+        name: 
+          - zabbix-server-pgsql  # Пакет Zabbix Server
+          - postgresql            # Пакет PostgreSQL
+          - postgresql-contrib    # Пакет дополнений PostgreSQL
+          - postgresql-libs       # Пакет библиотек PostgreSQL
+          - zabbix-pgsql          # Драйвер PostgreSQL для Zabbix
+        state: latest
+      become: yes
+      tags:
+        - zabbix-server
+        
+     - name: Create PostgreSQL User for Zabbix
+      postgresql_user:
+        db: "{{ zabbix_db_name }}"
+        name: "{{ zabbix_db_user }}"
+        password: "{{ zabbix_db_password }}"
+        priv: "ALL"
+        state: present
+
+    - name: Create PostgreSQL Database for Zabbix
+      postgresql_db:
+        name: "{{ zabbix_db_name }}"
+        owner: "{{ zabbix_db_user }}"
+        encoding: UTF8
+        lc_collate: 'en_US.UTF-8'
+        lc_ctype: 'en_US.UTF-8'
+        state: present   
+

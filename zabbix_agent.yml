@@ -1,0 +1,17 @@
+---
+- name: Install Zabbix Agent
+  hosts: zabbix_agents
+  tasks:
+    - name: Install Zabbix Agent
+      apt:
+        name: zabbix-agent
+        state: latest  
+      become: yes
+      tags:
+        - zabbix-agent
+
+    - name: Start Zabbix Agent
+      service:
+        name: zabbix-agent
+        state: started
+        enabled: true
