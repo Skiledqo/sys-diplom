@@ -524,6 +524,7 @@ resource "yandex_compute_snapshot_schedule" "snapshots" {
 Т.к в данный момент доступ с территории РФ к репозиториям Elastic.co ограничен, было принято решение развернуть ELK в контейнере Docker. Версия Elasticsearch, Kibana и filebeat 7.17.13.
 
 Контейнеры были развернуты через ansible. Файлы конфигурации находятся в репозитории.
+[ansible](ansible/)
 
 Страница в логами из Web-server1 и Web-server2 Kibana
 
