@@ -1,0 +1,12 @@
+#cloud-config
+datasource:
+ Ec2:
+  strict_id: false
+ssh_pwauth: no
+users:
+- name: elastic
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  shell: /bin/bash
+  ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCv2i1kXXn+HFMyFkVmaBrB9T+naTs0XZHX5INA1hlIpr1TDrl0z00DVzP/AFkmw29WO7Xf8eyAtla2M1vpP8H1tJPiCxUCmSMnL5+0xftO506eeutAi8t5PNA9jgpFQnjW+PJnsPiVT7864soIvEdrLImyqAFrMZMfOhYsMcgX51P/XYPZ33QoKpT7AOxB04n4CDbrlOZn0fu7XTDv7FB3L/66rbujhquxyxHJh6I5v6J1CPMuQjk/OG2R1xR1LPL1TQA+IWq/KmMimQsWApvzUj5QhClRFfrdv33UZjABT3z/w40TFt4wi+ApJmpKlvmUMu2R6hYOUinMQtiEFFRx bastion@bastion-nat
+runcmd: []

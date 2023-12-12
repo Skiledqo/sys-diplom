@@ -1,0 +1,12 @@
+#cloud-config
+datasource:
+ Ec2:
+  strict_id: false
+ssh_pwauth: no
+users:
+- name: bastion
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  shell: /bin/bash
+  ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD6L6ZnsbFUkitkgk2Cyk1mJp3mhxLoScExOyOIYA+H8/S7AFynbrNkgw3SuqPZ/X4c/sObK77Ii6GFseOuUV3SGzmFG2UkvvtAxqMWjcDCAdqQnG933H7YCEaOYs7flphh1S8Nd4qLxAvNOshCtYkUQvPcIbb92HW9EJAGcnfa8oeMRz5ToomVLZxtcBa4gywVwFahEf/S00swW/PFKsnJfxehnBKy90d6XIhW5T5qjoEqPOah/HZqvau+jOlSigGXKfsSBV51mRxdqKrh38e/OBr9KDUNvTvRumNr7/XhMlqhqCq+92lLJc5nME4a1gzfIO1fCaD4KT/uDPMcCG5P ivan@ivan
+runcmd: []
