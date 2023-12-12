@@ -510,80 +510,6 @@ resource "yandex_compute_snapshot_schedule" "snapshots" {
 
 Для развертывания системы мониторинга Zabbix на все ВМ был использован Ansible, установленный на Bastion Host
 
-Файл inventory для Ansible
-
-``` bash
-[zabbix_agents]
-elasticsearch ansible_host=elasticsearch.ru-central1.internal
-kibana ansible_host=kibana.ru-central1.internal
-web-server1 ansible_host=web-server1.ru-central1.internal
-bastion-nat ansible_host=bastion-nat.ru-central1.internal
-web-server2 ansible_host=web-server2.ru-central1.internal
-
-[zabbix_server]
-zabbix-server ansible_host=zabbix-server.ru-central1.internal
-```
-
-Конфигурация playbook для Zabbix-Agent и Zabbix-Server
-
-``` bash
----
-- name: Install Zabbix Agent
-  hosts: zabbix_agents
-  tasks:
-    - name: Install Zabbix Agent
-      apt:
-        name: zabbix-agent
-        state: latest  
-      become: yes
-      tags:
-        - zabbix-agent
-
-    - name: Start Zabbix Agent
-      service:
-        name: zabbix-agent
-        state: started
-        enabled: true
-```
-
-``` bash
-- name: Install Zabbix Server
-  hosts: zabbix_server
-  vars:
-    zabbix_db_name: zabbix
-    zabbix_db_user: zabbix
-    zabbix_db_password: netology
-  tasks:
-    - name: Install PostgreSQL and required packages
-      apt:
-        name: 
-          - zabbix-server-pgsql  # Пакет Zabbix Server
-          - postgresql            # Пакет PostgreSQL
-          - postgresql-contrib    # Пакет дополнений PostgreSQL
-          - postgresql-libs       # Пакет библиотек PostgreSQL
-          - zabbix-pgsql          # Драйвер PostgreSQL для Zabbix
-        state: latest
-      become: yes
-      tags:
-        - zabbix-server
-
-     - name: Create PostgreSQL User for Zabbix
-      postgresql_user:
-        db: "{{ zabbix_db_name }}"
-        name: "{{ zabbix_db_user }}"
-        password: "{{ zabbix_db_password }}"
-        priv: "ALL"
-        state: present
-
-    - name: Create PostgreSQL Database for Zabbix
-      postgresql_db:
-        name: "{{ zabbix_db_name }}"
-        owner: "{{ zabbix_db_user }}"
-        encoding: UTF8
-        lc_collate: 'en_US.UTF-8'
-        lc_ctype: 'en_US.UTF-8'
-        state: present
-```
 Хосты Zabbix
 
 ![Hosts.jpg](https://github.com/Skiledqo/sys-diplom/blob/main/pictures/Hosts.jpg)
@@ -596,6 +522,8 @@ zabbix-server ansible_host=zabbix-server.ru-central1.internal
 ## Логи
 
 Т.к в данный момент доступ с территории РФ к репозиториям Elastic.co ограничен, было принято решение развернуть ELK в контейнере Docker. Версия Elasticsearch, Kibana и filebeat 7.17.13.
+
+Контейнеры были развернуты через ansible. Файлы конфигурации находятся в репозитории.
 
 Страница в логами из Web-server1 и Web-server2 Kibana
 
