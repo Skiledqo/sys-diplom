@@ -1,0 +1,11 @@
+---
+- name: Deploy Infrastructure
+  hosts: all
+  gather_facts: true
+  roles:
+    - nginx
+    - zabbix_agent
+    - zabbix_server
+    - elasticsearch
+    - kibana
+    - filebeat

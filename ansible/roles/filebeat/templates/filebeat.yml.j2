@@ -1,0 +1,8 @@
+# filebeat.yml
+filebeat.inputs:
+- type: log
+  paths:
+    - /path/to/your/logs/*.log
+
+output.elasticsearch:
+  hosts: ["172.16.17.17:9200"]

@@ -1,0 +1,22 @@
+---
+- name: Install and configure Kibana
+  hosts: kibana
+  become: true
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Pull Kibana Docker image
+      docker_image:
+        name: docker.elastic.co/kibana/kibana:7.17.13
+
+    - name: Run Kibana container
+      docker_container:
+        name: kibana
+        image: docker.elastic.co/kibana/kibana:7.17.13
+        state: started
+        restart_policy: always
+        env:
+          ELASTICSEARCH_HOSTS: "http://172.16.17.17:9200"

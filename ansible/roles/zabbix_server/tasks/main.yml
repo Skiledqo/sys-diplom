@@ -1,0 +1,22 @@
+---
+- name: Install and configure Zabbix Server
+  hosts: zabbix-server
+  become: true
+  tasks:
+    - name: Install Zabbix Server
+      apt:
+        name: zabbix-server-mysql
+        state: present
+
+    - name: Configure Zabbix Server
+      template:
+        src: zabbix_server.conf.j2
+        dest: /etc/zabbix/zabbix_server.conf
+      notify:
+        - restart zabbix-server
+
+  handlers:
+    - name: restart zabbix-server
+      service:
+        name: zabbix-server
+        state: restarted

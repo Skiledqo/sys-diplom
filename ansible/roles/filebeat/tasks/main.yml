@@ -1,0 +1,22 @@
+---
+- name: Install and configure Filebeat
+  hosts: web-server1, web-server2
+  become: true
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Pull Filebeat Docker image
+      docker_image:
+        name: docker.elastic.co/beats/filebeat:7.17.13
+
+    - name: Run Filebeat container
+      docker_container:
+        name: filebeat
+        image: docker.elastic.co/beats/filebeat:7.17.13
+        state: started
+        restart_policy: always
+        env:
+          ELASTICSEARCH_HOSTS: "http://172.16.17.17:9200"
