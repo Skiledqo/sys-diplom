@@ -1,22 +1,86 @@
 ---
-- name: Install and configure Zabbix Server
+- name: Install and configure Zabbix Server with MySQL
   hosts: zabbix-server
   become: true
+  vars:
+    zabbix_db_name: zabbix
+    zabbix_db_user: zabbix
+    zabbix_db_password: netology
   tasks:
-    - name: Install Zabbix Server
+    - name: Check if Zabbix Server is already installed
+      stat:
+        path: /etc/zabbix/zabbix_server.conf
+      register: zabbix_server_installed
+
+    - name: Install MySQL and required packages
       apt:
-        name: zabbix-server-mysql
+        name:
+          - zabbix-server-mysql
+          - mysql-server
+          - mysql-client
+          - libmysqlclient-dev
+          - zabbix-frontend-php
+          - zabbix-apache-conf
+          - zabbix-agent
+        state: latest
+      become: yes
+      tags:
+        - zabbix-server
+      when: not zabbix_server_installed.stat.exists
+
+    - name: Start MySQL service
+      service:
+        name: mysql
+        state: started
+      become: yes
+      tags:
+        - zabbix-server
+      when: not zabbix_server_installed.stat.exists
+
+    - name: Secure MySQL installation (set root password)
+      mysql_user:
+        name: root
+        password: "{{ zabbix_db_password }}"
+        host: "{{ ansible_default_ipv4.address }}"
+      become: yes
+      tags:
+        - zabbix-server
+      when: not zabbix_server_installed.stat.exists
+
+    - name: Create Zabbix Database
+      mysql_db:
+        name: "{{ zabbix_db_name }}"
         state: present
+        login_user: root
+        login_password: "{{ zabbix_db_password }}"
+      become: yes
+      tags:
+        - zabbix-server
+      when: not zabbix_server_installed.stat.exists
 
-    - name: Configure Zabbix Server
-      template:
-        src: zabbix_server.conf.j2
-        dest: /etc/zabbix/zabbix_server.conf
-      notify:
-        - restart zabbix-server
+    - name: Create MySQL User for Zabbix
+      mysql_user:
+        name: "{{ zabbix_db_user }}"
+        password: "{{ zabbix_db_password }}"
+        priv: "{{ zabbix_db_name }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ zabbix_db_password }}"
+      become: yes
+      tags:
+        - zabbix-server
+      when: not zabbix_server_installed.stat.exists
 
-  handlers:
-    - name: restart zabbix-server
+    - name: Import Zabbix Database Schema
+      command: |
+        zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -h localhost -u {{ zabbix_db_user }} -p{{ zabbix_db_password }} {{ zabbix_db_name }}
+      become: yes
+      when: not zabbix_server_installed.stat.exists
+
+    - name: Restart Zabbix Server
       service:
         name: zabbix-server
         state: restarted
+      tags:
+        - zabbix-server
+
