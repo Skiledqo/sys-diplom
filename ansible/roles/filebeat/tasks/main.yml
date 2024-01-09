@@ -1,42 +1,24 @@
 ---
-- name: Install and configure Filebeat
-  hosts: web-server1, web-server2
-  become: true
+- hosts: web-server1, web-server2
+  become: yes
+  gather_facts: true
   tasks:
-    - name: Install Docker
-      apt:
-        name: docker.io
-        state: present
 
-    - name: Pull Filebeat Docker image
-      docker_image:
-        name: docker.elastic.co/beats/filebeat:7.17.13
+  - name: copy filebeat.deb
+    copy:
+      src: /home/ivan/diplom/ansible/filebeat-7.17.13-amd64.deb
+      dest: /home/filebeat
 
-    - name: Configure Filebeat
-      docker_container:
-        name: filebeat
-        image: docker.elastic.co/beats/filebeat:7.17.13
-        state: started
-        restart_policy: always
-        volumes:
-          - /var/log/nginx:/var/log/nginx:ro
-          - /etc/filebeat/filebeat.yml:/etc/filebeat/filebeat.yml
-        command: "filebeat -e"
-      notify:
-        - restart filebeat
-      environment:
-        - output.elasticsearch.hosts=["{{ hostvars['elasticsearch']['ansible_default_ipv4']['address'] }}:9200"]
+  - name: install filebeat
+    apt:
+      deb: /home/filebeat/filebeat-7.17.13-amd64.deb
 
-  handlers:
-    - name: restart filebeat
-      service:
-        name: filebeat
-        state: restarted
+  - name: copy filebeat config file
+    copy:
+      src: /home/ivan/diplom/ansible/filebeat.yml
+      dest: /etc/filebeat/filebeat.yml
 
-- name: Restart Filebeat container
-  hosts: web-server1, web-server2
-  tasks:
-    - name: Restart Filebeat container
-      docker_container:
-        name: filebeat
-        state: restarted
+  - name: Make sure a service is running
+    systemd:
+      state: started
+      name: filebeat
