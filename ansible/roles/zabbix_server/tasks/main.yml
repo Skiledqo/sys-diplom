@@ -2,10 +2,9 @@
 - name: Install and configure Zabbix Server with MySQL
   hosts: zabbix-server
   become: true
-  vars:
-    zabbix_db_name: zabbix
-    zabbix_db_user: zabbix
-    zabbix_db_password: netology
+  vars_files:
+    - /home/ivan/diplom/ansible/zabbix-server/vars/zabbix_secret.yml
+    
   tasks:
     - name: Check if Zabbix Server is already installed
       stat:
